@@ -1,0 +1,437 @@
+---
+title: "Fun with R Markdown"
+author: "Brian A. Fannin"
+date: "September 20, 2015"
+output: 
+  slidy_presentation:
+    self_contained: true
+    duration: 45
+---
+
+# Overview 
+
+- What can you do with R Markdown?
+- Where did it come from?
+- How does it work?
+
+# What can I do?
+
+- Write a book - http://adv-r.had.co.nz/
+- Write a blog - [PirateGrunt.com](PirateGrunt.com)
+- Create a website - http://rmarkdown.rstudio.com/
+- Add a vignette to a package - http://yihui.name/knitr/demo/vignette/
+- Publish research - https://github.com/rstudio/rticles
+- Automate business intelligence
+- Preserve your sanity
+
+# How can I do this?
+
+### Literate programming  
+
+Incorporate text (including markup) with computer instructions and the output from computer instructions.
+
+> "The practitioner of literate programming can be regarded as an essayist, whose main concern is with exposition and excellence of style."  
+>    - Donald Knuth
+
+Within the R world, this began with Sweave. 
+
+- https://en.wikipedia.org/wiki/Literate_programming
+- http://www.literateprogramming.com/knuthweb.pdf
+
+# Sweave
+
+- Incorporates or "weaves" R commands into a LateX document. 
+- Pretty old (first appeared in 2002)
+- Only supports R as a programming language
+- Only supports LateX for markup
+- https://www.statistik.lmu.de/~leisch/Sweave/
+- .Rnw -> R "noweb" http://www.cs.tufts.edu/~nr/noweb/
+
+
+# Sweave - how does it work?
+
+- Write a markup document, just as you always would
+- Include R code in "chunks"
+
+```    
+This is some LateX text.
+\begin{RidiculousMarkup}
+
+<<echo = FALSE, fig = TRUE>>=
+# This is an R code chunk.
+
+dfAwesomeData <- data.frame(x = someVariable, y = someOtherVariable)
+
+plt <- ggplot(dfAwesomeData, aes(x = x, y = y)) + geom_line()
+plt
+@
+
+And now we're back to LateX.
+\end{AbsurdCommands}
+```
+
+# Demo
+
+Example_Sweave.Rnw
+
+Example_Beamer.Rnw
+
+
+# Comments
+
+- Sweave just produces TEX output. You still need an engine to render the final .PDF
+- MikTeX (http://miktex.org/) works fine for me
+- Probably sufficient if you're an academic
+
+For most people (or at least Yihui Xie), Sweave wasn't enough. More output formats, more input languages, hooks, etc.
+
+Enter knitr.
+
+# knitr
+
+- Same basic concept as Sweave
+- Multi-language engine
+- Multiple processing options
+    - knitr
+    - Rhtml-
+    - brew
+    - Others (Rrst, Rtex, Rasciidoc)
+- http://yihui.name/knitr/
+- cheat sheet - https://cran.r-project.org/web/packages/knitr/vignettes/knitr-refcard.pdf
+
+# knitr
+
+Code chunks look a little different.
+
+- We must specify the language engine
+- Code chunks may use R expressions, i.e. we may conditionally execute
+
+<!-- https://ramnathv.github.io/posts/verbatim-chunks-knitr/ -->
+
+```{r cache = F, echo = FALSE}
+knitr::knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(
+      bef, 
+      knitr:::indent_block(paste(x, collapse = '\n'), "    "), 
+      "\n    ```\n"
+    )
+  } else {
+    stringr::str_c("\n\n```", tolower(options$engine), "\n", 
+      paste(x, collapse = '\n'), "\n```\n\n"
+    )
+  }
+})
+```
+
+```{r echo = TRUE, verbatim = TRUE}
+library(ggplot2)
+data(movies)
+m <- ggplot(movies, aes(x = rating)) + geom_density()
+m
+```
+
+
+# Quick demo
+
+Example_Markdown.Rmd
+
+# knitr hooks
+
+`knitr` supports user-defined pre- and post-processing of code chunks. In fact, I used one two slides ago, obtained from https://ramnathv.github.io/posts/verbatim-chunks-knitr/
+
+```{r echo = TRUE, verbatim = TRUE, eval = FALSE}
+knitr::knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(
+      bef, 
+      knitr:::indent_block(paste(x, collapse = '\n'), "    "), 
+      "\n    ```\n"
+    )
+  } else {
+    stringr::str_c("\n\n```", tolower(options$engine), "\n", 
+      paste(x, collapse = '\n'), "\n```\n\n"
+    )
+  }
+})
+```
+
+http://yihui.name/knitr/hooks/
+
+# knitr options
+
+Very similar to a hook, you can set an upload function within the package options. This works fairly well with the `RWordpress` package.
+
+```{r eval=FALSE, echo = TRUE, verbatin = TRUE}
+opts_knit$set(upload.fun = WrapWordpressUpload, base.url = NULL)
+
+WrapWordpressUpload = function(file) {
+  result = RWordpress::uploadFile(file)
+  result$url
+}
+
+options(WordPressLogin = c(PirateGrunt = "myPassword")
+        , WordPressURL = "http://PirateGrunt.wordpress.com/xmlrpc.php")
+
+RWordpress::knit2wp("MyCoolPost.Rmd"
+                    , title = "Catchy title"
+                    , publish = FALSE
+                    , shortcode = TRUE
+                    , categories = c("R"))
+```
+
+RWordpress hasn't been updated in a while. Written by Duncan Temple Lang, so nice pedigree, but could be out of date.
+
+http://yihui.name/knitr/demo/wordpress/
+http://www.omegahat.org/RWordPress/
+
+
+# knitr + Markdown = R markdown
+
+- Unifies multiple output formats by having content written in markdown, rather than a specific markup language
+- Once the markdown output is generated use `pandoc` to render in other markup languages
+- Comes for free with RStudio
+
+# Markdown
+
+> "A Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions." – John Gruber
+
+- Very simple syntax
+- Human readable
+- May be converted into other formats
+- Read about the life of Aaron Swartz
+- http://daringfireball.net/projects/markdown/
+
+# Pandoc
+
+- Haskell tool written by John MacFarlane
+- Recognizes that most markup languages have common features: level 1-n text, hyperlinks, tables, images
+- MS Word uses XML -> that's another markup language!
+
+http://pandoc.org/
+
+--- 
+
+First we mark down, then we mark up
+
+Got it? Good.
+
+> - Also, YAML.
+
+# YAML
+
+YAML = "**Y**AML **A**in't **M**arkup **L**anguage"
+
+> "What It Is: YAML is a human friendly data serialization standard for all programming languages."
+
+```  
+---
+title: "Fun with R Markdown"
+author: "Brian A. Fannin"
+date: "September 20, 2015"
+output: 
+  slidy_presentation:
+    self_contained: false
+    duration: 45
+---
+```
+
+Fun fact: JSON is a subset of YAML
+
+http://yaml.org/
+
+# R markdown from the command line
+
+```
+render(input, output_format = NULL, output_file = NULL, output_dir = NULL,
+       output_options = NULL, intermediates_dir = NULL,
+       runtime = c("auto", "static", "shiny"),
+       clean = TRUE, params = NULL, envir = parent.frame(), 
+       quiet = FALSE, encoding = getOption("encoding"))
+```
+
+```
+rmarkdown::render(myFile, output)
+```
+
+# HTML
+
+- CSS
+- Build your own website
+- Nothing stopping you from using JavaScript libraries like Bootstrap and D3.
+- If you're targeting HTML, you can use HTML within the R markdown document itself
+    - If you do, you'll need to write or copy a fair bit of HTML, css and java script 
+- Blog like a boss
+
+```{r eval=FALSE}
+# Building your own website
+
+- 
+
+# Fun with CSS #DifferentCSS
+
+Here, Im useing a different set of CSS.
+
+```
+
+# Other stuff
+
+- Tables
+- Customized reporting with `whisker`
+- Jekyll
+- Jupyter
+- Creating your own templates
+
+# Tables
+
+- [xtable] (http://xtable.r-forge.r-project.org/)
+- knitr::kable 
+- [pander] (http://rapporter.github.io/pander/)
+- [DT] (https://rstudio.github.io/DT/)
+
+# Table data
+
+```{r }
+data(Master, package = "Lahman")
+Master <- head(Master[, 1:5], 5)
+```
+
+# xtable
+
+```{r echo = TRUE, results = 'asis'}
+library(xtable)
+print(xtable(Master), type = 'html')
+```
+
+# kable
+
+```{r echo=TRUE, results = 'asis'}
+knitr::kable(Master)
+```
+
+# pander
+
+```{r results = 'asis', echo=TRUE}
+pander::pandoc.table(Master)
+```
+
+# DT
+
+```{r }
+DT::datatable(Master)
+```
+
+
+# Tables
+
+Of these options, I tend to use `pander` most often.
+
+- Possible to allow the table to break across pages
+- Easy to control where breaks happen
+- Easy to align columns
+
+DT is super awesome for easy data search. Loads of bells and whistles on the package site: https://rstudio.github.io/DT/.
+
+Note that this discussion of tables has _nothing_ to do with neat tabular output from functions like `lm`. For that, check out [`stargazer`](https://cran.r-project.org/web/packages/stargazer/index.html)
+
+# `whisker` and moustache templates
+
+- Uses the [`whisker`](https://github.com/edwindj/whisker) package
+- Wrap merge fields in triple braces
+- Pass merge values in with a named list
+
+This is not the same thing as a "parameterized report" described here: http://rmarkdown.rstudio.com/developer_parameterized_reports.html
+
+# Moustache example
+
+<!--
+Why am I not evaluating this code chunk? Because, rendering a markdown file from within a markdown file, causes an error:
+'Error in env$metadata <- list() : 
+  cannot change value of locked binding for 'metadata''
+  
+See this issue: https://github.com/rstudio/rmarkdown/issues/248
+-->
+
+```{r MoustacheExample, echo = TRUE, eval = FALSE}
+library(whisker)
+data <- list(Hitter1 = "Sammy Sosa"
+             , Hitter2 = "Pete Rose"
+             , NameId1 = "sosasa01"
+             , NameId2 = "rosepe01")
+
+outFile <- whisker.render(readLines("Example_Whisker.Rmd"), data)
+writeLines(outFile, "SosaVsRose.Rmd")
+rmarkdown::render("SosaVsRose.Rmd", envir = new.env(), runtime = "static", quiet = TRUE)
+```
+
+# Jekyll
+
+- Converts markdown into static HTML
+- Great for blogging and simple page design
+- Default engine for GitHub pages
+- Liquid templating system
+- With effort, we can use moustache templating in R
+- StaticDocs - https://github.com/hadley/staticdocs
+
+# Jekyll demo
+
+# Jupyter
+
+- Saves the commands and output of an interactive session
+- Formerly IPython
+- Support for over 50 language kernels
+- You'll need python
+- Then get install instructions here: http://jupyter.readthedocs.org/en/latest/install.html
+- And the R kernel http://irkernel.github.io/installation/ (They've clearly not heard of devtools)
+
+>- I couldn't get it to work locally
+
+# Customized templates
+
+- Possible to roll your own template
+- Pandoc template:
+    - Uses a templating framework wherein field delimited by `$` are replaced with YAML metadata, or command-line arguments
+    - http://pandoc.org/demo/example9/templates.html
+- RStudio will recognize "skeletons" in the dialog box for a new RMarkdown document
+- http://rmarkdown.rstudio.com/developer_document_templates.html
+
+# Some cool pre-made templates
+
+```{r eval=FALSE}
+devtools::install_github("rstudio/rticles")
+devtools::install_github("jjallaire/revealjs")
+```
+
+![alt text](images/NewRMarkdown.png)
+
+# Customized template examples
+
+- JStatSoft
+- Tufte template
+- Reveal.js
+
+# Stuff I didn't talk about
+
+  - Slidify
+      - http://slidify.org/
+      - Watch this space! Ramnath Vaidyanathan is pretty tremendous.
+  - Shiny Docs
+      - They're awesome, but require a big detour into Shiny, which is a talk unto itself.
+      >- Anybody want to create a Shiny talk?
+
+# Two more references
+
+- https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+- https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf
+
+```{r eval=FALSE, echo=FALSE}
+# Compost
+
+# - Mathjax
+# - Rd2HTML
+
+```
