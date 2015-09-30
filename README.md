@@ -1,4 +1,4 @@
-[![Github Releases](https://img.shields.io/github/downloads/atom/atom/latest/total.svg)]()
+[![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)]()
 
 # FunWithRMarkdown
 Fun with RMarkdown and dynamic documents
