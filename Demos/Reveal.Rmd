@@ -1,0 +1,74 @@
+---
+title: "Fun with R Markdown and Reveal.js"
+author: "Brian A. Fannin"
+date: "September 20, 2015"
+output: revealjs::revealjs_presentation
+---
+
+# Overview 
+
+- What can you do with R Markdown?
+- Where did it come from?
+- How does it work?
+
+# What can I do?
+
+- Write a book - http://adv-r.had.co.nz/
+- Write a blog - [PirateGrunt.com](PirateGrunt.com)
+- Create a website - http://rmarkdown.rstudio.com/
+- Add a vignette to a package - http://yihui.name/knitr/demo/vignette/
+- Publish research - https://github.com/rstudio/rticles
+- Automate business intelligence
+- Preserve your sanity
+
+# How can I do this?
+
+### Literate programming  
+
+Incorporate text (including markup) with computer instructions and the output from computer instructions.
+
+> "The practitioner of literate programming can be regarded as an essayist, whose main concern is with exposition and excellence of style."  
+>    - Donald Knuth
+
+Within the R world, this began with Sweave. 
+
+- https://en.wikipedia.org/wiki/Literate_programming
+- http://www.literateprogramming.com/knuthweb.pdf
+
+# An R code example
+
+```{r results = 'hide', echo = FALSE, message = FALSE}
+library(Lahman)
+library(dplyr)
+library(ggplot2)
+
+data(Batting)
+data(Master)
+
+Master <- Master %>% 
+  select(playerID, nameFirst, nameLast) 
+
+Batting <- Batting %>% 
+  filter(playerID %in% c('cobbty01', 'ruthba01')) %>% 
+  merge(Master, all.x=TRUE) %>% 
+  group_by(nameFirst, nameLast) %>% 
+  summarise(Hits = sum(H)
+            , AtBats = sum(AB)) %>% 
+  ungroup() %>% 
+  mutate(Name = paste(nameFirst, nameLast)
+         , Misses = AtBats - Hits
+         , BattingAverage = Hits / AtBats) %>% 
+  select(-nameFirst, -nameLast)
+
+dfBeta <- data.frame(x = seq(0, 1, length.out = 1000))
+
+for (i in seq_len(nrow(Batting))){
+  dfBeta[, Batting$Name[i]] <- dbeta(dfBeta$x, Batting$Hits[i] + 1, Batting$Misses[i] + 1)
+}
+
+dfBeta <- dfBeta %>% 
+  tidyr::gather("Batter", "Density", -x)
+
+plt <- ggplot(dfBeta, aes(x = x, y = Density, color = Batter)) + geom_line()
+plt
+```

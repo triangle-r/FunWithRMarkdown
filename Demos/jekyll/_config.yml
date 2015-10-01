@@ -1,0 +1,20 @@
+# Dependencies
+markdown:         Kramdown
+highlighter:      pygments
+
+# Permalinks
+permalink:        pretty
+relative_permalinks: true
+
+# Setup
+title:            Jekyll Demo
+tagline:          Demos and stuff
+description:      'Demo of a jekyll site built with RMarkdown'
+baseurl:          /jekyll
+theme:            Superhero
+
+author:
+  name:           'Brian A. Fannin'
+
+# Custom vars
+version:          0.0.1
