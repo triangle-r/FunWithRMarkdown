@@ -267,16 +267,7 @@ rmarkdown::render(myFile, output)
     - If you do, you'll need to write or copy a fair bit of HTML, css and java script 
 - Blog like a boss
 
-```{r eval=FALSE}
-# Building your own website
-
-- 
-
-# Fun with CSS #DifferentCSS
-
-Here, Im useing a different set of CSS.
-
-```
+# Basic site demo
 
 # Other stuff
 
@@ -325,7 +316,6 @@ pander::pandoc.table(Master)
 DT::datatable(Master)
 ```
 
-
 # Tables
 
 Of these options, I tend to use `pander` most often.
@@ -370,12 +360,22 @@ rmarkdown::render("SosaVsRose.Rmd", envir = new.env(), runtime = "static", quiet
 
 # Jekyll
 
+- http://jekyllrb.com/
 - Converts markdown into static HTML
 - Great for blogging and simple page design
 - Default engine for GitHub pages
 - Liquid templating system
 - With effort, we can use moustache templating in R
-- StaticDocs - https://github.com/hadley/staticdocs
+- See also: StaticDocs - https://github.com/hadley/staticdocs
+
+# 
+
+The rendering could probably be done in a makefile. 
+
+```
+$ Rscript rmarkdown::render(inFile, markdown)
+$ jekyll serve
+```
 
 # Jekyll demo
 
@@ -410,9 +410,9 @@ devtools::install_github("jjallaire/revealjs")
 
 # Customized template examples
 
-- JStatSoft
-- Tufte template
-- Reveal.js
+- [JStatSoft](https://github.com/rstudio/rticles)
+- [Tufte template](http://rmarkdown.rstudio.com/tufte_handout_format.html)
+- [Reveal.js](https://github.com/jjallaire/revealjs)
 
 # Stuff I didn't talk about
 

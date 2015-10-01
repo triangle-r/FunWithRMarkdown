@@ -282,13 +282,9 @@ output:
 </ul></li>
 <li>Blog like a boss</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Building your own website</span>
-
--<span class="st"> </span>
-
-<span class="co"># Fun with CSS #DifferentCSS</span>
-
-Here, Im useing a different set of CSS.</code></pre>
+</div>
+<div id="basic-site-demo" class="slide section level1">
+<h1>Basic site demo</h1>
 </div>
 <div id="other-stuff" class="slide section level1">
 <h1>Other stuff</h1>
@@ -319,7 +315,7 @@ Master &lt;-<span class="st"> </span><span class="kw">head</span>(Master[, <span
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xtable)
 <span class="kw">print</span>(<span class="kw">xtable</span>(Master), <span class="dt">type =</span> <span class="st">'html'</span>)</code></pre>
 <!-- html table generated in R 3.2.2 by xtable 1.7-4 package -->
-<!-- Wed Sep 30 10:17:34 2015 -->
+<!-- Thu Oct 01 10:52:46 2015 -->
 <table border="1">
 <tr>
 <th>
@@ -556,8 +552,8 @@ USA
 <div id="dt" class="slide section level1">
 <h1>DT</h1>
 <pre class="sourceCode r"><code class="sourceCode r">DT::<span class="kw">datatable</span>(Master)</code></pre>
-<p><div id="htmlwidget-82" style="width:100%;height:auto;" class="datatables"></div>
-<script type="application/json" data-for="htmlwidget-82">{"x":{"data":[["1","2","3","4","5"],["aardsda01","aaronha01","aaronto01","aasedo01","abadan01"],[1981,1934,1939,1954,1972],[12,2,8,9,8],[27,5,5,8,25],["USA","USA","USA","USA","USA"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>playerID</th>\n      <th>birthYear</th>\n      <th>birthMonth</th>\n      <th>birthDay</th>\n      <th>birthCountry</th>\n    </tr>\n  </thead>\n</table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false},"callback":null,"filter":"none"},"evals":[]}</script></p>
+<p><div id="htmlwidget-3535" style="width:100%;height:auto;" class="datatables"></div>
+<script type="application/json" data-for="htmlwidget-3535">{"x":{"data":[["1","2","3","4","5"],["aardsda01","aaronha01","aaronto01","aasedo01","abadan01"],[1981,1934,1939,1954,1972],[12,2,8,9,8],[27,5,5,8,25],["USA","USA","USA","USA","USA"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>playerID</th>\n      <th>birthYear</th>\n      <th>birthMonth</th>\n      <th>birthDay</th>\n      <th>birthCountry</th>\n    </tr>\n  </thead>\n</table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false},"callback":null,"filter":"none"},"evals":[]}</script></p>
 </div>
 <div id="tables-1" class="slide section level1">
 <h1>Tables</h1>
@@ -567,6 +563,7 @@ USA
 <li>Easy to control where breaks happen</li>
 <li>Easy to align columns</li>
 </ul>
+<p>DT is super awesome for easy data search. Loads of bells and whistles on the package site: <a href="https://rstudio.github.io/DT/" class="uri">https://rstudio.github.io/DT/</a>.</p>
 <p>Note that this discussion of tables has <em>nothing</em> to do with neat tabular output from functions like <code>lm</code>. For that, check out <a href="https://cran.r-project.org/web/packages/stargazer/index.html"><code>stargazer</code></a></p>
 </div>
 <div id="whisker-and-moustache-templates" class="slide section level1">
@@ -600,13 +597,20 @@ rmarkdown::<span class="kw">render</span>(<span class="st">&quot;SosaVsRose.Rmd&
 <div id="jekyll" class="slide section level1">
 <h1>Jekyll</h1>
 <ul>
+<li><a href="http://jekyllrb.com/" class="uri">http://jekyllrb.com/</a></li>
 <li>Converts markdown into static HTML</li>
 <li>Great for blogging and simple page design</li>
 <li>Default engine for GitHub pages</li>
 <li>Liquid templating system</li>
 <li>With effort, we can use moustache templating in R</li>
-<li>StaticDocs - <a href="https://github.com/hadley/staticdocs" class="uri">https://github.com/hadley/staticdocs</a></li>
+<li>See also: StaticDocs - <a href="https://github.com/hadley/staticdocs" class="uri">https://github.com/hadley/staticdocs</a></li>
 </ul>
+</div>
+<div id="section" class="slide section level1">
+<h1></h1>
+<p>The rendering could probably be done in a makefile.</p>
+<pre><code>$ Rscript rmarkdown::render(inFile, markdown)
+$ jekyll serve</code></pre>
 </div>
 <div id="jekyll-demo" class="slide section level1">
 <h1>Jekyll demo</h1>
@@ -647,9 +651,9 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;jjallair
 <div id="customized-template-examples" class="slide section level1">
 <h1>Customized template examples</h1>
 <ul>
-<li>JStatSoft</li>
-<li>Tufte template</li>
-<li>Reveal.js</li>
+<li><a href="https://github.com/rstudio/rticles">JStatSoft</a></li>
+<li><a href="http://rmarkdown.rstudio.com/tufte_handout_format.html">Tufte template</a></li>
+<li><a href="https://github.com/jjallaire/revealjs">Reveal.js</a></li>
 </ul>
 </div>
 <div id="stuff-i-didnt-talk-about" class="slide section level1">
