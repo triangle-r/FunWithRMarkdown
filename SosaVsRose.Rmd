@@ -1,17 +1,14 @@
 ---
-title: "Was Ty Cobb a better hitter than Babe Ruth?"
+title: "Was Sammy Sosa a better hitter than Pete Rose?"
 author: Jane Analyst
 output: html_document
 ---
-
-# This is level one text
-
-## This is level two text
 
 ```{r results = 'hide', echo = FALSE, message = FALSE}
 library(Lahman)
 library(dplyr)
 library(ggplot2)
+
 
 data(Batting)
 data(Master)
@@ -20,7 +17,7 @@ Master <- Master %>%
   select(playerID, nameFirst, nameLast) 
 
 Batting <- Batting %>% 
-  filter(playerID %in% c('cobbty01', 'ruthba01')) %>% 
+  filter(playerID %in% c('sosasa01', 'rosepe01')) %>% 
   merge(Master, all.x=TRUE) %>% 
   group_by(nameFirst, nameLast) %>% 
   summarise(Hits = sum(H)
@@ -32,7 +29,7 @@ Batting <- Batting %>%
   select(-nameFirst, -nameLast)
 ```
 
-Did Ty Cobb hit better than the Babe? Let's use Bayesian analysis to try and find out!
+Did Sammy Sosa hit better than Pete Rose? Let's use Bayesian analysis to try and find out!
 
 The graph below is a posterior density of each player's batting average using an uninformed beta prior density.
 
@@ -50,5 +47,3 @@ dfBeta <- dfBeta %>%
 plt <- ggplot(dfBeta, aes(x = x, y = Density, color = Batter)) + geom_line()
 plt
 ```
-
-Looks like Ty Cobb was a better hitter.
